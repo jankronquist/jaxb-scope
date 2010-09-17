@@ -37,7 +37,7 @@ public class ScopedAnnotationReader extends AbstractInlineAnnotationReaderImpl<T
 
     private <A extends Annotation> A getScopedAnnotation(Class<A> annotationType, Field field) {
     	XmlScope xmlScope = field.getAnnotation(XmlScope.class);
-    	if (xmlScope != null && scope.equals(xmlScope.scope())) {
+    	if (xmlScope != null && isInScope(xmlScope.scope())) {
     		if (annotationType == XmlElement.class) {
     			return (A) xmlScope.element();
     		}
@@ -54,12 +54,21 @@ public class ScopedAnnotationReader extends AbstractInlineAnnotationReaderImpl<T
 		for( int i=0; i<r.length; i++ ) {
             if (r[i] instanceof XmlScope) {
             	 XmlScope xmlScope = (XmlScope)r[i];
-            	 if (scope.equals(xmlScope.scope())) {
+            	 if (isInScope(xmlScope.scope())) {
             		 r[i] = xmlScope.element();
             	 }
             }
         }
 		return r;
+	}
+
+	private boolean isInScope(String[] scopes) {
+		for (String scope : scopes) {
+			if (this.scope.equals(scope)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public Annotation[] getAllMethodAnnotations(Method arg0, Locatable arg1) {

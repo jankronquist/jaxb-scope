@@ -12,5 +12,5 @@ import javax.xml.bind.annotation.XmlElement;
 @Retention(RUNTIME) @Target({FIELD, METHOD})
 public @interface XmlScope {
 	XmlElement element();
-	String scope();
+	String[] scope();
 }
