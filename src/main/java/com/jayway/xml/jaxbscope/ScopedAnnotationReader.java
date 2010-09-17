@@ -4,6 +4,10 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlElement;
 
@@ -16,11 +20,11 @@ import com.sun.xml.bind.v2.model.core.ErrorHandler;
 public class ScopedAnnotationReader extends AbstractInlineAnnotationReaderImpl<Type,Class,Field,Method>
     implements RuntimeAnnotationReader {
 
-    private final String scope;
+    private final Set<String> scopes;
     private final RuntimeAnnotationReader delegate = new RuntimeInlineAnnotationReader();
 
-	public ScopedAnnotationReader(String scope) {
-		this.scope = scope;
+	public ScopedAnnotationReader(String... scopes) {
+		this.scopes = new HashSet<String>(Arrays.asList(scopes));
 	}
 
 	public <A extends Annotation> A getFieldAnnotation(Class<A> annotation, Field field, Locatable srcPos) {
@@ -64,7 +68,7 @@ public class ScopedAnnotationReader extends AbstractInlineAnnotationReaderImpl<T
 
 	private boolean isInScope(String[] scopes) {
 		for (String scope : scopes) {
-			if (this.scope.equals(scope)) {
+			if (this.scopes.contains(scope)) {
 				return true;
 			}
 		}
